@@ -32,8 +32,8 @@ public class SimDisk {
             // check for hole
 
             freeList = new HashMap();
-            count = 0;
-            for(int i=0; i < size+1; i++) {
+            //count = 0;
+            for(int i=0; i < size; i++) {
                 if(allocatedList.containsKey(i)) {
                     System.out.println(allocatedList.get(i));
                     System.out.println("allocated list contains key!" + allocatedList);

@@ -32,6 +32,14 @@ public class Main {
 		sd.printAllocatedList();
 		sd.printDirectory();
 
+		sd.allocate("seven.dat", 1);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("eight.dat", 1);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
 //		sd.allocate("mike.txt", 3);
 //		sd.printAllocatedList();
 //		sd.printDirectory();
