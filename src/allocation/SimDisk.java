@@ -11,6 +11,7 @@ public class SimDisk {
     int index;
     int size;
     int count = 1;
+    int segmentSize = 1;
 
     public SimDisk(int s) {
         this.size = s;
@@ -23,51 +24,49 @@ public class SimDisk {
         // add to allocatedList
         if(allocatedList.isEmpty()) {
             allocatedList.put(0, sizeOfFile);
-            // add to directory
             directory.put(0, fileName);
+            System.out.println("Allocate called. List isEmpty.");
+            return;
         } else { // allocatedList NOT empty, need to check some things
             // are there any holes? how big are they?
             // check for hole
 
             freeList = new HashMap();
-            count = 1;
+            count = 0;
             for(int i=0; i < size+1; i++) {
                 if(allocatedList.containsKey(i)) {
+                    System.out.println(allocatedList.get(i));
+                    System.out.println("allocated list contains key!" + allocatedList);
                     i += (Integer) allocatedList.get(i) - 1; // jump to end of this file
-                    count = 1;
-                } else if(count == 1){
-                    freeList.put(i, count);
+                    segmentSize = 1;
+                } else if (segmentSize == 1) {
+                    freeList.put(i, segmentSize);
+                    segmentSize++;
                     index = i;
-                    count++;
-                } else {
-                    freeList.put(index, count++);
+                }else {
+                    freeList.replace(index, segmentSize);
+                    segmentSize++;
                 }
             }
-            System.out.println(freeList);
+            System.out.println("FREELIST in method: " + freeList);
 
             // algorithm to decide where to allocate the file
             for(int i=0; i < size; i++) {
                 if(freeList.get(i) != null) {
-                    if((Integer) freeList.get(i)  > sizeOfFile){ // simple, if a large enough space found, add the file
+                    if((Integer) freeList.get(i) >= sizeOfFile){ // simple, if a large enough space found, add the file
                         allocatedList.put(i, sizeOfFile);
                         directory.put(i, fileName); // add to directory
+                        System.out.println("Allocate called. " + fileName + " allocated to disk.");
                         return;
                     }
                 }
             }
-
-
-
-
-
         }
+        System.out.println("Allocate called. " + fileName + " was not allocated. Not enough space!");
     }
 
     public void deallocate(String file) {
         // deallocate, remove from allocatedList
-        System.out.println("*******************************************");
-        System.out.println(allocatedList);
-        System.out.println(directory);
         for(int i=0; i < size; i++) {
             if(directory.get(i) != null)
                 if(directory.get(i).equals(file)) {
@@ -80,6 +79,7 @@ public class SimDisk {
 
     public void printAllocatedList() {
         number = 1;
+        System.out.println("ALLOCATED LIST:");
         for(int i=0; i < size; i++) {
             if(allocatedList.containsKey(i)) {
                 for(int j=0; j < (Integer) allocatedList.get(i); j++) {
@@ -92,6 +92,8 @@ public class SimDisk {
             }
         }
         System.out.println();
+        System.out.println("ALLOCATED LIST: " + allocatedList);
+        System.out.println();
     }
 
     public void printDirectory() {
@@ -103,8 +105,13 @@ public class SimDisk {
                 System.out.println("Blocks: "); // TO-DO! NEED TO IMPLEMENT!
             }
         }
+        System.out.println();
     }
 
-
+    public void printFreeList() {
+        System.out.println("FREELIST:");
+        System.out.println(freeList);
+        System.out.println();
+    }
 
 }
