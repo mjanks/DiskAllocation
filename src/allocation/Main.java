@@ -11,49 +11,21 @@ public class Main {
 		// testing
 
 		System.out.println("totBlock = " + size);
-		sd.allocate("a.dat", 5);
+		sd.allocate("bob.txt", 5);
+		sd.allocate("second hand.txt", 8);
+		sd.allocate("third", 7);
 		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.allocate("b.dat", 7);
+		// read "bob.txt"
+		// read "second hand.txt"
+		sd.deallocate("bob.txt");
 		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.deallocate("a.dat");
-		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.allocate("c.dat", 2);
-		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.allocate("z.dat", 4);
-		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.allocate("y.dat", 3);
-		sd.printDirectory();
-		//sd.printAllocatedList();
-
-		sd.allocate("x.dat", 2);
+		sd.allocate("fourth in line.dat", 1);
+		sd.allocate("fifth is big", 8);
+		// read "fourth in line.dat"
+		// read "fifth is big"
 		sd.printDirectory();
 
-		sd.allocate("p.dat", 2);
-		sd.printDirectory();
-		sd.allocate("q.dat", 2);
-		sd.printDirectory();
-		sd.deallocate("z.dat");
-		sd.printDirectory();
-		sd.deallocate("p.dat");
-		sd.printDirectory();
-		sd.allocate("r.dat", 2);
-		sd.printDirectory();
 
-		//sd.printAllocatedList();
-//
-//		sd.allocate("d", 5);
-//		sd.printDirectory();
-//		sd.printAllocatedList();
 
 	}
 }

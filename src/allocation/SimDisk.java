@@ -82,18 +82,18 @@ public class SimDisk {
             // sort freeList by hole size, first convert values to int[]
             temp = new int[size];
             count = 0;
-            System.out.println(freeList);
+            //System.out.println(freeList);
             for(Object value: freeList.values()) {
                 temp[count] = (Integer) value;
                 count++;
             }
-            for(int i=0; i < temp.length; i++)
-                System.out.print(temp[i] + " ");
-            sort(temp);
-            System.out.println();
-            for(int i=0; i < temp.length; i++)
-                System.out.print(temp[i] + " ");
-            System.out.println();
+//            for(int i=0; i < temp.length; i++)
+//                System.out.print(temp[i] + " ");
+            sort(temp); // sort the holes
+            //System.out.println();
+//            for(int i=0; i < temp.length; i++)
+//                System.out.print(temp[i] + " ");
+            //System.out.println();
 
             // check if there's a perfect fit
             for(int i=0; i < size; i++) {
@@ -159,7 +159,7 @@ public class SimDisk {
                     allocatedList.remove(i);
                     directory.remove(i);
                     System.out.println("File " + file + " was deleted successfully");
-                    System.out.println();
+                    //System.out.println();
                     return;
                 }
         }
@@ -169,6 +169,7 @@ public class SimDisk {
     public void printDirectory() {
         keySet = new ArrayList();
         detailsArray = new int[size];
+        System.out.println();
         System.out.println("DIRECTORY:");
         //System.out.println(directory);
 
@@ -192,12 +193,17 @@ public class SimDisk {
             System.out.println();
         }
         System.out.println();
+        System.out.println("DETAILS:");
         // print the details array
         for(int i=0; i < detailsArray.length; i++) {
             if((i % 10) == 0 && i != 0)
                 System.out.println();
-            System.out.print(detailsArray[i] + " ");
+            if(detailsArray[i] == 0)
+                System.out.print("* ");
+            else
+                System.out.print(detailsArray[i] + " ");
         }
+        System.out.println();
         System.out.println();
     }
 
