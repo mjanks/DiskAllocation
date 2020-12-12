@@ -5,14 +5,16 @@ import java.util.HashMap;
 
 public class SimDisk {
     HashMap allocatedList = new HashMap(); // K = index start of file, V = size of file
-    HashMap freeList = new HashMap(); // K = index start of free segment, V = size of free segment
+    HashMap freeList = new HashMap(); // K = index start of hole, V = size of hole
     HashMap directory = new HashMap(); // K = index start of file, V = fileName
     ArrayList keySet = new ArrayList();
+    int[] temp;
     int number = 1;
     int index;
     int size;
     int segmentSize = 1;
     int block;
+    int count;
 
     public SimDisk(int s) {
         this.size = s;
@@ -30,8 +32,8 @@ public class SimDisk {
         if(allocatedList.isEmpty()) {
             allocatedList.put(0, sizeOfFile);
             directory.put(0, fileName);
-            System.out.println("File " + fileName + " was added successfully!");
-            System.out.println();
+            System.out.println("File " + fileName + " was added successfully");
+            //System.out.println();
             //System.out.println("Allocate called. List isEmpty.");
             return;
         } else { // allocatedList NOT empty, need to check some things
@@ -56,20 +58,96 @@ public class SimDisk {
                 }
             }
             //System.out.println("FREELIST in method: " + freeList);
+            // algorithms to decide where to allocate the file
 
-            // algorithm to decide where to allocate the file
+            /*
+            // *************** FIRST FIT ***************
             for(int i=0; i < size; i++) {
                 if(freeList.get(i) != null) {
-                    if((Integer) freeList.get(i) >= sizeOfFile){ // simple, if a large enough space found, add the file
+                    if((Integer) freeList.get(i) >= sizeOfFile){ // first fit
                         allocatedList.put(i, sizeOfFile);
                         directory.put(i, fileName); // add to directory
-                        System.out.println("File " + fileName + " was added successfully!");
+                        System.out.println("File " + fileName + " was added successfully");
+                        //System.out.println();
+                        return;
+                    }
+                }
+            } // *************** END FIRST FIT ***************
+            */
+
+
+            // *************** CONTIGUOUS ALLOCATION ***************
+            // need to find the smallest hole that the file will fit into
+            // sort freeList by hole size, first convert values to int[]
+            temp = new int[size];
+            count = 0;
+            System.out.println(freeList);
+            for(Object value: freeList.values()) {
+                temp[count] = (Integer) value;
+                count++;
+            }
+            for(int i=0; i < temp.length; i++)
+                System.out.print(temp[i] + " ");
+            sort(temp);
+            System.out.println();
+            for(int i=0; i < temp.length; i++)
+                System.out.print(temp[i] + " ");
+            System.out.println();
+
+            // check if there's a perfect fit
+            for(int i=0; i < size; i++) {
+                if(freeList.get(i) != null) {
+                    if((Integer) freeList.get(i) == sizeOfFile){ // if perfect fit, allocate, done
+                        allocatedList.put(i, sizeOfFile); // add to allocatedList
+                        directory.put(i, fileName); // add to directory
+                        System.out.println("File " + fileName + " was added successfully");
+                        //System.out.println();
                         return;
                     }
                 }
             }
+
+            // check next largest hole, and so on
+            for(int i=0; i < temp.length; i++) {
+                if(temp[i] != 0 && temp[i] > sizeOfFile) { // skip the zeros!
+                    for(int j=0; j < size; j++) {
+                        if(freeList.get(j) != null) {
+                            if((Integer) freeList.get(j) == temp[i]) {
+                                allocatedList.put(j, sizeOfFile); // add to allocatedList
+                                directory.put(j, fileName); // add to directory
+                                System.out.println("File " + fileName + " was added successfully");
+                                //System.out.println();
+                                return;
+                            }
+                        }
+                    }
+                }
+            }
+            // *************** END CONTIGUOUS ALLOCATION ***************
+            
+
         }
         System.out.println("File " + fileName + " was not added. Not enough space!");
+    }
+
+    // Function to sort array using insertion sort
+    // Referenced: https://www.geeksforgeeks.org/insertion-sort/
+    public void sort(int arr[])
+    {
+        int n = arr.length;
+        for (int i = 1; i < n; ++i) {
+            int key = arr[i];
+            int j = i - 1;
+
+            /* Move elements of arr[0..i-1], that are
+               greater than key, to one position ahead
+               of their current position */
+            while (j >= 0 && arr[j] > key) {
+                arr[j + 1] = arr[j];
+                j = j - 1;
+            }
+            arr[j + 1] = key;
+        }
     }
 
     public void deallocate(String file) {
@@ -79,17 +157,24 @@ public class SimDisk {
                 if(directory.get(i).equals(file)) {
                     allocatedList.remove(i);
                     directory.remove(i);
-                    System.out.println("File " + file + " was deleted successfully!");
+                    System.out.println("File " + file + " was deleted successfully");
+                    System.out.println();
+                    return;
                 }
         }
+        System.out.println("File " + file + " does not exist.");
     }
 
     public void printAllocatedList() {
         number = 1;
-        System.out.println("ALLOCATED LIST:");
+        System.out.println("DETAILS:");
         for(int i=0; i < size; i++) {
+            if((i % 10) == 0 && i != 0)
+                System.out.println();
             if(allocatedList.containsKey(i)) {
                 for(int j=0; j < (Integer) allocatedList.get(i); j++) {
+                    if(((i+j) % 10) == 0 && i != 0)
+                        System.out.println();
                     System.out.print(number + " ");
                 }
                 i += (Integer) allocatedList.get(i) - 1;
@@ -114,8 +199,10 @@ public class SimDisk {
             keySet.add(key);
         }
 
+        number = 1;
         for(int i=0; i < keySet.size(); i++) {
-            System.out.print("Name of file: " + directory.get(keySet.get(i)) + ", Blocks ");
+            System.out.print(number + ". Name of file: " + directory.get(keySet.get(i)) + ", Block(s) ");
+            number++;
             block = (Integer) keySet.get(i);
             for(int j=0; j < (Integer) allocatedList.get(keySet.get(i)); j++) {
                 System.out.print(block + " ");
