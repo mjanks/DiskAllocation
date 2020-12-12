@@ -40,6 +40,42 @@ public class Main {
 		sd.printAllocatedList();
 		sd.printDirectory();
 
+		sd.deallocate("four.dat");
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.deallocate("six.dat");
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.deallocate("seven.dat");
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("nine.dat", 5);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("ten.dat", 3);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("eleven.dat", 2);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("twelve.dat", 1);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("thirteen.dat", 0);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
+		sd.allocate("fourteen.dat", 0);
+		sd.printAllocatedList();
+		sd.printDirectory();
+
 //		sd.allocate("mike.txt", 3);
 //		sd.printAllocatedList();
 //		sd.printDirectory();
