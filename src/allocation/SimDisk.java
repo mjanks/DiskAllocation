@@ -20,7 +20,7 @@ public class SimDisk {
 
     public void allocate(String fileName, int sizeOfFile) {
         if(sizeOfFile <= 0) {
-            System.out.println("Size of file cannot be zero ore less!");
+            System.out.println("Size of file cannot be less than 1!");
             return;
         }
         // if enough space, if there's a large enough hole for the file to fit,
@@ -30,7 +30,9 @@ public class SimDisk {
         if(allocatedList.isEmpty()) {
             allocatedList.put(0, sizeOfFile);
             directory.put(0, fileName);
-            System.out.println("Allocate called. List isEmpty.");
+            System.out.println("File " + fileName + " was added successfully!");
+            System.out.println();
+            //System.out.println("Allocate called. List isEmpty.");
             return;
         } else { // allocatedList NOT empty, need to check some things
             // are there any holes? how big are they?
@@ -40,8 +42,8 @@ public class SimDisk {
             segmentSize = 1;
             for(int i=0; i < size; i++) {
                 if(allocatedList.containsKey(i)) {
-                    System.out.println(allocatedList.get(i));
-                    System.out.println("allocated list contains key!" + allocatedList);
+                    //System.out.println(allocatedList.get(i));
+                    //System.out.println("allocated list contains key!" + allocatedList);
                     i += (Integer) allocatedList.get(i) - 1; // jump to end of this file
                     segmentSize = 1;
                 } else if (segmentSize == 1) {
@@ -53,7 +55,7 @@ public class SimDisk {
                     segmentSize++;
                 }
             }
-            System.out.println("FREELIST in method: " + freeList);
+            //System.out.println("FREELIST in method: " + freeList);
 
             // algorithm to decide where to allocate the file
             for(int i=0; i < size; i++) {
@@ -61,13 +63,13 @@ public class SimDisk {
                     if((Integer) freeList.get(i) >= sizeOfFile){ // simple, if a large enough space found, add the file
                         allocatedList.put(i, sizeOfFile);
                         directory.put(i, fileName); // add to directory
-                        System.out.println("Allocate called. " + fileName + " allocated to disk.");
+                        System.out.println("File " + fileName + " was added successfully!");
                         return;
                     }
                 }
             }
         }
-        System.out.println("Allocate called. " + fileName + " was not allocated. Not enough space!");
+        System.out.println("File " + fileName + " was not added. Not enough space!");
     }
 
     public void deallocate(String file) {
@@ -77,6 +79,7 @@ public class SimDisk {
                 if(directory.get(i).equals(file)) {
                     allocatedList.remove(i);
                     directory.remove(i);
+                    System.out.println("File " + file + " was deleted successfully!");
                 }
         }
     }
@@ -96,14 +99,14 @@ public class SimDisk {
             }
         }
         System.out.println();
-        System.out.println("ALLOCATED LIST: " + allocatedList);
+        //System.out.println("ALLOCATED LIST: " + allocatedList);
         System.out.println();
     }
 
     public void printDirectory() {
-        System.out.println("DIRECTORY:");
-        System.out.println(directory);
         keySet = new ArrayList();
+        System.out.println("DIRECTORY:");
+        //System.out.println(directory);
 
         // Referenced: https://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
         for ( Object key : allocatedList.keySet() ) {
@@ -111,9 +114,8 @@ public class SimDisk {
             keySet.add(key);
         }
 
-        //System.out.println("keySet size: " + keySet.size());
         for(int i=0; i < keySet.size(); i++) {
-            System.out.print("Name of file: " + directory.get(keySet.get(i)) + " Blocks: ");
+            System.out.print("Name of file: " + directory.get(keySet.get(i)) + ", Blocks ");
             block = (Integer) keySet.get(i);
             for(int j=0; j < (Integer) allocatedList.get(keySet.get(i)); j++) {
                 System.out.print(block + " ");
@@ -121,16 +123,6 @@ public class SimDisk {
             }
             System.out.println();
         }
-
-//        for(int i=0; i < directory.size(); i++) {
-//            if(directory.get(i) != null) {
-//                System.out.print(directory.get(i) + " ");
-//                System.out.println("Blocks: "); // TO-DO! NEED TO IMPLEMENT!
-//                for(int j=0; j < keySet.size(); j++) {
-//                    System.out.println();
-//                }
-//            }
-//        }
         System.out.println();
     }
 

@@ -6,6 +6,9 @@ public class Main {
 		int size = 10;
 		SimDisk sd = new SimDisk(size);
 
+		// TO-DO! PROCESS INPUT FILE!
+
+		// testing
 		sd.allocate("one.dat", 1);
 		sd.printAllocatedList();
 		sd.printDirectory();
@@ -20,6 +23,9 @@ public class Main {
 		sd.printDirectory();
 
 		sd.deallocate("one.dat");
+		sd.printAllocatedList();
+		sd.printDirectory();
+
 		sd.deallocate("three.dat");
 		sd.printAllocatedList();
 		sd.printDirectory();
@@ -75,25 +81,6 @@ public class Main {
 		sd.allocate("fourteen.dat", 0);
 		sd.printAllocatedList();
 		sd.printDirectory();
-
-//		sd.allocate("mike.txt", 3);
-//		sd.printAllocatedList();
-//		sd.printDirectory();
-//		sd.deallocate("text.dat");
-//		sd.printAllocatedList();
-//		sd.printDirectory();
-//		sd.allocate("new.dat", 2);
-//		sd.printAllocatedList();
-//		sd.printDirectory();
-//		sd.allocate("sixth.dat", 6);
-//		sd.printAllocatedList();
-//		sd.printDirectory();
-//		sd.deallocate("taylor.txt");
-//		sd.printAllocatedList();
-//		sd.printDirectory();
-//		sd.allocate("100.dat", 2);
-//		sd.printAllocatedList();
-//		sd.printDirectory();
 
 	}
 }
