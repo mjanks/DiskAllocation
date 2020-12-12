@@ -8,6 +8,7 @@ public class SimDisk {
     HashMap freeList = new HashMap(); // K = index start of hole, V = size of hole
     HashMap directory = new HashMap(); // K = index start of file, V = fileName
     ArrayList keySet = new ArrayList();
+    int[] detailsArray;
     int[] temp;
     int number = 1;
     int index;
@@ -124,7 +125,7 @@ public class SimDisk {
                 }
             }
             // *************** END CONTIGUOUS ALLOCATION ***************
-            
+
 
         }
         System.out.println("File " + fileName + " was not added. Not enough space!");
@@ -165,31 +166,9 @@ public class SimDisk {
         System.out.println("File " + file + " does not exist.");
     }
 
-    public void printAllocatedList() {
-        number = 1;
-        System.out.println("DETAILS:");
-        for(int i=0; i < size; i++) {
-            if((i % 10) == 0 && i != 0)
-                System.out.println();
-            if(allocatedList.containsKey(i)) {
-                for(int j=0; j < (Integer) allocatedList.get(i); j++) {
-                    if(((i+j) % 10) == 0 && i != 0)
-                        System.out.println();
-                    System.out.print(number + " ");
-                }
-                i += (Integer) allocatedList.get(i) - 1;
-                number++;
-            } else {
-                System.out.print("* ");
-            }
-        }
-        System.out.println();
-        //System.out.println("ALLOCATED LIST: " + allocatedList);
-        System.out.println();
-    }
-
     public void printDirectory() {
         keySet = new ArrayList();
+        detailsArray = new int[size];
         System.out.println("DIRECTORY:");
         //System.out.println(directory);
 
@@ -202,20 +181,23 @@ public class SimDisk {
         number = 1;
         for(int i=0; i < keySet.size(); i++) {
             System.out.print(number + ". Name of file: " + directory.get(keySet.get(i)) + ", Block(s) ");
-            number++;
             block = (Integer) keySet.get(i);
             for(int j=0; j < (Integer) allocatedList.get(keySet.get(i)); j++) {
                 System.out.print(block + " ");
+                // details array
+                detailsArray[block] = number;
                 block++;
             }
+            number++;
             System.out.println();
         }
         System.out.println();
-    }
-
-    public void printFreeList() {
-        System.out.println("FREELIST:");
-        System.out.println(freeList);
+        // print the details array
+        for(int i=0; i < detailsArray.length; i++) {
+            if((i % 10) == 0 && i != 0)
+                System.out.println();
+            System.out.print(detailsArray[i] + " ");
+        }
         System.out.println();
     }
 
