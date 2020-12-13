@@ -25,9 +25,11 @@ public class Main {
 		// read "fourth in line.dat"
 		// read "fifth is big"
 		sd.printDirectory();
+		System.out.println("************ CONTIGUOUS ALLOCATION STATS ************");
+		sd.printStats();
+		System.out.println();
 		System.out.println("************ END OF CONTIGUOUS ALLOCATION ************");
 
-		System.out.println();
 		System.out.println("************ START INDEXED ALLOCATION ************");
 		System.out.println("totBlock = " + size);
 		sd2.indexedAllocation("bob.txt", 5);
@@ -40,9 +42,13 @@ public class Main {
 		sd2.printDirectory();
 		sd2.indexedAllocation("fourth in line.dat", 1);
 		sd2.indexedAllocation("fifth is big", 8);
+		sd2.indexedAllocation("too big.dat", 1);
 		// read "fourth in line.dat"
 		// read "fifth is big"
 		sd2.printDirectory();
+		System.out.println("************ INDEXED ALLOCATION STATS ************");
+		sd2.printStats();
+		System.out.println();
 		System.out.println("************ END OF INDEXED ALLOCATION ************");
 	}
 }

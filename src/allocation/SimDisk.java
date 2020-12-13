@@ -22,6 +22,7 @@ public class SimDisk {
     int segmentSize = 1;
     int block;
     int count;
+    int notAllocated = 0;
 
     // TO-DO! IMPLEMENT READ FUNCTION
 
@@ -71,6 +72,7 @@ public class SimDisk {
                 return;
              */
         }
+        notAllocated++;
         System.out.println("File " + fileName + " was not added. Not enough space!");
     }
 
@@ -100,6 +102,7 @@ public class SimDisk {
                 return;
              */
         }
+        notAllocated++;
         System.out.println("File " + fileName + " was not added. Not enough space!");
     }
 
@@ -141,6 +144,8 @@ public class SimDisk {
         matched = new ArrayList();
         String blocks = "";
         System.out.println();
+        System.out.println("============== Current Drive Contents =================");
+        System.out.println();
         System.out.println("DIRECTORY:");
 
         // Referenced: https://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
@@ -158,19 +163,16 @@ public class SimDisk {
                 blocks += block + " ";
                 block++;
             }
-
             flag = false;
             for(int m=0; m < matched.size(); m++) {
                 if(directory.get(keySet.get(i)).equals(matched.get(m))) {
                     flag = true;
                 }
             }
-
             if(flag == false) {
                 adjustedDirectory.put(directory.get(keySet.get(i)), blocks);
                 blocks = "";
             }
-
             if(flag == false){
                 for(int k=(i+1); k < directory.size(); k++) {
                     if(directory.get(keySet.get(i)).equals(directory.get(keySet.get(k)))) {
@@ -183,7 +185,6 @@ public class SimDisk {
                     }
                 }
             }
-
             if(!blocks.equals("")) {
                 blocks += adjustedDirectory.get(directory.get(keySet.get(i)));
                 adjustedDirectory.replace(directory.get(keySet.get(i)), blocks);
@@ -196,7 +197,7 @@ public class SimDisk {
             keySet.add(key);
         }
         for(int i=0; i < adjustedDirectory.size(); i++) {
-            System.out.print(number + ". Name of file: " + keySet.get(i) + ", Block(s) ");
+            System.out.print(number + ". " + keySet.get(i) + ", Block(s) ");
             System.out.print(adjustedDirectory.get(keySet.get(i)));
             System.out.println();
             number++;
@@ -228,6 +229,7 @@ public class SimDisk {
             else
                 System.out.print(detailsArray[i] + " ");
         }
+        System.out.println();
         System.out.println();
     }
 
@@ -328,6 +330,13 @@ public class SimDisk {
             }
         }
         return sizeOfFile + fatBlocks;
+    }
+
+    public void printStats() {
+        System.out.println();
+        System.out.println("During this simulation,");
+        System.out.println("Total head moves = TO-DO! NOT IMPLEMENTED");
+        System.out.println("Total number of files that could not be allocated = " + notAllocated);
     }
 
 }
