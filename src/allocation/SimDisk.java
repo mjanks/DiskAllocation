@@ -1,5 +1,10 @@
 package allocation;
 
+/* Created by Michael Janks
+12/13/20
+COSC 423
+DISK ALLOCATION PROJECT EXTRA CREDIT
+ */
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -147,6 +152,10 @@ public class SimDisk {
         }
     }
 
+    public void deallocateIndexed(String file) {
+
+    }
+
     public void createAdjustedDirectory() {
         keySet = new ArrayList();
         adjustedDirectory = new HashMap();
@@ -278,17 +287,6 @@ public class SimDisk {
     }
 
     public void read(String fileName) {
-        boolean flag = false;
-        for(int i=0; i < size; i++) {
-            if(directory.get(i) != null)
-                if(directory.get(i).equals(fileName)) {
-                    flag = true;
-                }
-        }
-        if(!flag) {
-            System.out.println("File " + fileName + " does not exist.");
-            return;
-        }
         numMoves = 0;
         createAdjustedDirectory();
         createFileNumbers();
@@ -296,6 +294,7 @@ public class SimDisk {
 
         // calculate numMoves
         for(int i=0; i < detailsArray.length; i++) {
+
             if(detailsArray[i] == (Integer) fileNumbers.get(fileName)) {
                 numMoves++;
             }

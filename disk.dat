@@ -1,5 +1,5 @@
 30
-add bob.txt 4
+add "bob.txt" 5
 add "second hand.txt" 8
 add "third" 7
 print
@@ -11,18 +11,4 @@ add "fourth in line.dat" 1
 add "fifth is big" 8
 read "fourth in line.dat"
 read "fifth is big"
-print
-add "sixth maybe too large.dat" 1
-print
-del "nowhere.txt"
-print
-add "file size zero.dat" 0
-print
-del "fifth is big"
-print
-add "new file seventh.txt" 5
-print
-read "third"
-read "new file seventh.txt"
-add "big file" 99
 print
