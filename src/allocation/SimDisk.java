@@ -147,10 +147,6 @@ public class SimDisk {
         }
     }
 
-    public void deallocateIndexed(String file) {
-
-    }
-
     public void createAdjustedDirectory() {
         keySet = new ArrayList();
         adjustedDirectory = new HashMap();
@@ -282,6 +278,17 @@ public class SimDisk {
     }
 
     public void read(String fileName) {
+        boolean flag = false;
+        for(int i=0; i < size; i++) {
+            if(directory.get(i) != null)
+                if(directory.get(i).equals(fileName)) {
+                    flag = true;
+                }
+        }
+        if(!flag) {
+            System.out.println("File " + fileName + " does not exist.");
+            return;
+        }
         numMoves = 0;
         createAdjustedDirectory();
         createFileNumbers();
