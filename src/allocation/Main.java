@@ -7,89 +7,126 @@ import java.util.Scanner;
 public class Main {
 
 	public static void main(String[] args) {
-		int totBlock;
+		String inputFile = "disk.dat"; // ** INPUT FILE TO RUN SIMULATIONS ON **
+		boolean proceed = true;
+		int totBlock = 0;
 		String lineOfData;
 		String command = "";
 
 		// Contiguous Allocation
-		File file = new File("disk.dat");
+		File file = new File(inputFile);
 		Scanner scan = null;
 		try {
 			scan = new Scanner(file);
 		} catch (FileNotFoundException e) {
 			System.out.println("FileNotFoundException: " + e);
+			proceed = false;
 		}
-		System.out.println("************ START CONTIGUOUS ALLOCATION ************");
-		totBlock = Integer.parseInt(scan.next());
-		SimDisk sd = new SimDisk(totBlock);
-		System.out.println("totBlock = " + totBlock);
-		while(scan.hasNextLine()){
-			lineOfData = scan.nextLine();
-			String[] tokens = lineOfData.split("\"");
-			for(int i=0; i < tokens.length; i++) {
-				tokens[i] = tokens[i].trim();
-			}
-			command = tokens[0];
-			switch(command) {
-				case "add":
-					sd.contiguousAllocation(tokens[1], Integer.parseInt(tokens[2]));
-					break;
-				case "del":
-					sd.deallocate(tokens[1]);
-					break;
-				case "print":
-					sd.printDirectory();
-					break;
-				case "read":
-					sd.read(tokens[1]);
-					break;
-			}
-		}
-		scan.close();
-		System.out.println("************ CONTIGUOUS ALLOCATION STATS ************");
-		sd.printStats();
-		System.out.println();
-		System.out.println("************ END OF CONTIGUOUS ALLOCATION ************");
-
-		// Indexed Allocation
-		file = new File("disk.dat");
-		scan = null;
 		try {
-			scan = new Scanner(file);
-		} catch (FileNotFoundException e) {
-			System.out.println("FileNotFoundException: " + e);
+			if(proceed)
+				totBlock = Integer.parseInt(scan.next());
+		} catch (NumberFormatException e) {
+			System.out.println("NumberFormatException: " + e);
+			proceed = false;
 		}
-		System.out.println("************ START INDEXED ALLOCATION ************");
-		totBlock = Integer.parseInt(scan.next());
-		SimDisk sd2 = new SimDisk(totBlock);
-		System.out.println("totBlock = " + totBlock);
-		while(scan.hasNextLine()){
-			lineOfData = scan.nextLine();
-			String[] tokens = lineOfData.split("\"");
-			for(int i=0; i < tokens.length; i++) {
-				tokens[i] = tokens[i].trim();
+		if(proceed) {
+			System.out.println("************ START CONTIGUOUS ALLOCATION ************");
+			SimDisk sd = new SimDisk(totBlock);
+			System.out.println("totBlock = " + totBlock);
+			while(scan.hasNextLine()){
+				lineOfData = scan.nextLine();
+				String[] tokens = lineOfData.split("\"");
+				for(int i=0; i < tokens.length; i++) {
+					tokens[i] = tokens[i].trim();
+				}
+				command = tokens[0];
+				if(command.equals("add") || command.equals("del") || command.equals("print")
+						|| command.equals("read")) {
+					switch(command) {
+						case "add":
+							try {
+								sd.contiguousAllocation(tokens[1], Integer.parseInt(tokens[2]));
+							} catch(NumberFormatException e) {
+								System.out.println("NumberFormatException: " + e);
+							}
+							break;
+						case "del":
+							sd.deallocate(tokens[1]);
+							break;
+						case "print":
+							sd.printDirectory();
+							break;
+						case "read":
+							sd.read(tokens[1]);
+							break;
+					}
+				} else {
+					System.out.println("Invalid command. Check input file.");
+				}
+
 			}
-			command = tokens[0];
-			switch(command) {
-				case "add":
-					sd2.indexedAllocation(tokens[1], Integer.parseInt(tokens[2]));
-					break;
-				case "del":
-					sd2.deallocate(tokens[1]);
-					break;
-				case "print":
-					sd2.printDirectory();
-					break;
-				case "read":
-					sd2.read(tokens[1]);
-					break;
+			scan.close();
+			System.out.println("************ CONTIGUOUS ALLOCATION STATS ************");
+			sd.printStats();
+			System.out.println();
+			System.out.println("************ END OF CONTIGUOUS ALLOCATION ************");
+
+			// Indexed Allocation
+			file = new File(inputFile);
+			scan = null;
+			try {
+				scan = new Scanner(file);
+			} catch (FileNotFoundException e) {
+				System.out.println("FileNotFoundException: " + e);
 			}
+			try {
+				totBlock = Integer.parseInt(scan.next());
+			} catch (NumberFormatException e) {
+				System.out.println("NumberFormatException: " + e);
+			}
+			System.out.println("************ START INDEXED ALLOCATION ************");
+			SimDisk sd2 = new SimDisk(totBlock);
+			System.out.println("totBlock = " + totBlock);
+			while(scan.hasNextLine()){
+				lineOfData = scan.nextLine();
+				String[] tokens = lineOfData.split("\"");
+				for(int i=0; i < tokens.length; i++) {
+					tokens[i] = tokens[i].trim();
+				}
+				command = tokens[0];
+				if(command.equals("add") || command.equals("del") || command.equals("print")
+						|| command.equals("read")) {
+					switch(command) {
+						case "add":
+							try {
+								sd2.contiguousAllocation(tokens[1], Integer.parseInt(tokens[2]));
+							} catch(NumberFormatException e) {
+								System.out.println("NumberFormatException: " + e);
+							}
+							break;
+						case "del":
+							sd2.deallocate(tokens[1]);
+							break;
+						case "print":
+							sd2.printDirectory();
+							break;
+						case "read":
+							sd2.read(tokens[1]);
+							break;
+					}
+				} else {
+					System.out.println("Invalid command. Check input file.");
+				}
+			}
+			scan.close();
+			System.out.println("************ INDEXED ALLOCATION STATS ************");
+			sd2.printStats();
+			System.out.println();
+			System.out.println("************ END OF INDEXED ALLOCATION ************");
 		}
-		scan.close();
-		System.out.println("************ INDEXED ALLOCATION STATS ************");
-		sd2.printStats();
-		System.out.println();
-		System.out.println("************ END OF INDEXED ALLOCATION ************");
+
+
+
 	}
 }
 
