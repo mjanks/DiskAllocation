@@ -8,6 +8,7 @@ public class Main {
 
 	public static void main(String[] args) {
 		int totBlock;
+		int numMoves;
 		String lineOfData;
 		String command = "";
 
@@ -43,7 +44,7 @@ public class Main {
 					sd.printDirectory();
 					break;
 				case "read":
-					System.out.println("NOT YET IMPLEMENTED");
+					sd.read(tokens[1]);
 					break;
 			}
 		}

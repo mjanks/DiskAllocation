@@ -8,7 +8,8 @@ public class SimDisk {
     HashMap allocatedList = new HashMap(); // K = index start of file, V = size of file
     HashMap freeList = new HashMap(); // K = index start of hole, V = size of hole
     HashMap directory = new HashMap(); // K = index start of file, V = fileName
-    HashMap adjustedDirectory = new HashMap<String, String>();
+    HashMap adjustedDirectory = new HashMap<String, String>(); // used for printing
+    HashMap fileNumbers = new HashMap(); // K = fileName, V = number
     ArrayList keySet = new ArrayList();
     ArrayList matched = new ArrayList();
     boolean flag = false;
@@ -23,6 +24,8 @@ public class SimDisk {
     int block;
     int count;
     int notAllocated = 0;
+    int numMoves;
+    int totMoves;
 
     // TO-DO! IMPLEMENT READ FUNCTION
 
@@ -137,16 +140,8 @@ public class SimDisk {
         System.out.println("File " + file + " does not exist.");
     }
 
-    public void printDirectory() {
-        keySet = new ArrayList();
-        detailsArray = new int[size];
-        adjustedDirectory = new HashMap();
-        matched = new ArrayList();
+    public void createAdjustedDirectory() {
         String blocks = "";
-        System.out.println();
-        System.out.println("============== Current Drive Contents =================");
-        System.out.println();
-        System.out.println("DIRECTORY:");
 
         // Referenced: https://stackoverflow.com/questions/10462819/get-keys-from-hashmap-in-java
         for ( Object key : allocatedList.keySet() ) {
@@ -190,8 +185,22 @@ public class SimDisk {
                 adjustedDirectory.replace(directory.get(keySet.get(i)), blocks);
             }
         }
+    }
 
+    public void printDirectory() {
+        keySet = new ArrayList();
+        detailsArray = new int[size];
+        adjustedDirectory = new HashMap();
+        matched = new ArrayList();
+        System.out.println();
+        System.out.println("============== Current Drive Contents =================");
+        System.out.println();
+        System.out.println("DIRECTORY:");
+        createAdjustedDirectory();
+
+        // print adjusted directory
         number = 1;
+        fileNumbers = new HashMap();
         keySet = new ArrayList();
         for ( Object key : adjustedDirectory.keySet() ) {
             keySet.add(key);
@@ -200,9 +209,11 @@ public class SimDisk {
             System.out.print(number + ". " + keySet.get(i) + ", Block(s) ");
             System.out.print(adjustedDirectory.get(keySet.get(i)));
             System.out.println();
+            fileNumbers.put(keySet.get(i), number);
             number++;
         }
         System.out.println();
+
         System.out.println("DETAILS:");
         number = 1;
         // need to parse the string from the adjustedDirectory
@@ -211,7 +222,6 @@ public class SimDisk {
         while (keySetIterator.hasNext())
         {
             String key = (String) keySetIterator.next();
-            //System.out.println("Key : " + key + "   Value : " + adjustedDirectory.get(key));
             String str = (String) adjustedDirectory.get(key);
             String[] tokens = str.split(" ");
             for(int i=0; i < tokens.length; i++) {
@@ -233,6 +243,60 @@ public class SimDisk {
         System.out.println();
     }
 
+    public void printStats() {
+        System.out.println();
+        System.out.println("During this simulation,");
+        System.out.println("Total head moves = " + totMoves);
+        System.out.println("Total number of files that could not be allocated = " + notAllocated);
+    }
+
+    public void read(String fileName) {
+        numMoves = 0;
+        keySet = new ArrayList();
+        detailsArray = new int[size];
+        adjustedDirectory = new HashMap();
+        matched = new ArrayList();
+
+        createAdjustedDirectory();
+        number = 1;
+        fileNumbers = new HashMap();
+        keySet = new ArrayList();
+        for ( Object key : adjustedDirectory.keySet() ) {
+            keySet.add(key);
+        }
+        for(int i=0; i < adjustedDirectory.size(); i++) {
+            fileNumbers.put(keySet.get(i), number);
+            number++;
+        }
+
+        number = 1;
+        // need to parse the string from the adjustedDirectory
+        // Referenced: https://www.javainterviewpoint.com/iterate-through-hashmap/
+        Iterator keySetIterator = adjustedDirectory.keySet().iterator();
+        while (keySetIterator.hasNext())
+        {
+            String key = (String) keySetIterator.next();
+            String str = (String) adjustedDirectory.get(key);
+            String[] tokens = str.split(" ");
+            for(int i=0; i < tokens.length; i++) {
+                detailsArray[Integer.parseInt(tokens[i])] = number;
+            }
+            number++;
+        }
+
+        // calculate numMoves
+        for(int i=0; i < detailsArray.length; i++) {
+            if(detailsArray[i] == (Integer) fileNumbers.get(fileName)) {
+                numMoves++;
+                totMoves++;
+            }
+            while(detailsArray[i] == (Integer) fileNumbers.get(fileName)) {
+                i++;
+            }
+        }
+        System.out.println("File " + fileName + " was read successfully with " + numMoves + " head move(s)");
+    }
+
     public boolean firstFit(String fileName, int sizeOfFile) {
         for(int i=0; i < size; i++) {
             if(freeList.get(i) != null) {
@@ -248,8 +312,6 @@ public class SimDisk {
     }
 
     public boolean contiguous(String fileName, int sizeOfFile) {
-        // need to find the smallest hole that the file will fit into
-        // sort freeList by hole size, first convert values to int[]
         temp = new int[size];
         count = 0;
         for(Object value: freeList.values()) {
@@ -257,14 +319,12 @@ public class SimDisk {
             count++;
         }
         sort(temp); // sort the holes smallest to largest
-
-        // *************** CONTIGUOUS ALLOCATION ***************
         // check if there's a perfect fit
         for(int i=0; i < size; i++) {
             if(freeList.get(i) != null) {
                 if((Integer) freeList.get(i) == sizeOfFile){ // if perfect fit, allocate, done
-                    allocatedList.put(i, sizeOfFile); // add to allocatedList
-                    directory.put(i, fileName); // add to directory
+                    allocatedList.put(i, sizeOfFile);
+                    directory.put(i, fileName);
                     System.out.println("File " + fileName + " was added successfully");
                     return true;
                 }
@@ -287,7 +347,6 @@ public class SimDisk {
             }
         }
         return false;
-        // *************** END CONTIGUOUS ALLOCATION ***************
     }
 
     public boolean indexed(String fileName, int sizeOfFile) {
@@ -330,13 +389,6 @@ public class SimDisk {
             }
         }
         return sizeOfFile + fatBlocks;
-    }
-
-    public void printStats() {
-        System.out.println();
-        System.out.println("During this simulation,");
-        System.out.println("Total head moves = TO-DO! NOT IMPLEMENTED");
-        System.out.println("Total number of files that could not be allocated = " + notAllocated);
     }
 
 }
