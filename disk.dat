@@ -12,3 +12,11 @@ add "fifth is big" 8
 read "fourth in line.dat"
 read "fifth is big"
 print
+add "sixth maybe too large.dat" 1
+print
+del "nowhere.txt"
+print
+add "file size zero.dat" 0
+print
+del "fifth is big"
+print
